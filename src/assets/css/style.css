@@ -1,0 +1,356 @@
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond&family=Gelasio:ital,wght@0,400;0,700;1,400&display=swap');
+
+:root {
+	/* primary color block */
+	/* Hue is a degree on the color wheel from 0 to 360. 0 is red, 120 is green, and 240 is blue.Saturation is a percentage value. 0% means a shade of gray, and 100% is the full color.Lightness is also a percentage. 0% is black, 50% is neither light or dark, 100% is white */
+
+	--primary-color-light: hsl(0, 0%, 98%);
+	--primary-color-glare: hsl(180, 70%, 40%);
+	--primary-color-dark: hsl(0, 0%, 20%);
+
+	/* secondary color block */
+	--secondary-color-light: hsl(348, 100%, 80%);
+	--secondary-color-glare: hsl(241, 100%, 60%);
+	--secondary-color-dark: hsl(241, 100%, 40%);
+
+	/* For Boxes */
+
+	--color-light: hsl(0, 40%, 91%);
+	--color-dark: hsl(93, 83%, 26%);
+
+	/* --text-max-width sets max inline width and should be between 45 and 75 ch units for good readiing experience */
+	--text-max-width: 60ch;
+
+	/* Sizes */
+
+	--step--2: clamp(0.5556rem, 0.8597rem + -0.3924vw, 0.7813rem);
+	--step--1: clamp(0.8331rem, 0.9738rem + -0.1815vw, 0.9375rem);
+	--step-0: clamp(1.125rem, 1.0815rem + 0.2174vw, 1.25rem);
+	--step-1: clamp(1.35rem, 1.1674rem + 0.913vw, 1.875rem);
+	--step-2: clamp(1.62rem, 1.2052rem + 2.0739vw, 2.8125rem);
+	--step-3: clamp(1.9438rem, 1.1524rem + 3.9565vw, 4.2188rem);
+	--step-4: clamp(2.3325rem, 0.9427rem + 6.9489vw, 6.3281rem);
+	--step-5: clamp(2.7994rem, 0.4713rem + 11.6402vw, 9.4925rem);
+
+	/* Bespoke sizes */
+
+	--flow-space: 2em;
+	--border-thin: 2px;
+	--border-thick: 20px;
+	--gutter: 1em;
+	--br: 1rem;
+
+	/* Spaces */
+
+	--space-3xs: clamp(0.3125rem, 0.3125rem + 0vw, 0.3125rem);
+	--space-2xs: clamp(0.5625rem, 0.5408rem + 0.1087vw, 0.625rem);
+	--space-xs: clamp(0.875rem, 0.8533rem + 0.1087vw, 0.9375rem);
+	--space-s: clamp(1.125rem, 1.0815rem + 0.2174vw, 1.25rem);
+	--space-m: clamp(1.6875rem, 1.6223rem + 0.3261vw, 1.875rem);
+	--space-l: clamp(2.25rem, 2.163rem + 0.4348vw, 2.5rem);
+	--space-xl: clamp(3.375rem, 3.2446rem + 0.6522vw, 3.75rem);
+	--space-2xl: clamp(4.5rem, 4.3261rem + 0.8696vw, 5rem);
+	--space-3xl: clamp(6.75rem, 6.4891rem + 1.3043vw, 7.5rem);
+
+	/* One-up pairs */
+	--space-3xs-2xs: clamp(0.3125rem, 0.2038rem + 0.5435vw, 0.625rem);
+	--space-2xs-xs: clamp(0.5625rem, 0.4321rem + 0.6522vw, 0.9375rem);
+	--space-xs-s: clamp(0.875rem, 0.7446rem + 0.6522vw, 1.25rem);
+	--space-s-m: clamp(1.125rem, 0.8641rem + 1.3043vw, 1.875rem);
+	--space-m-l: clamp(1.6875rem, 1.4049rem + 1.413vw, 2.5rem);
+	--space-l-xl: clamp(2.25rem, 1.7283rem + 2.6087vw, 3.75rem);
+	--space-xl-2xl: clamp(3.375rem, 2.8098rem + 2.8261vw, 5rem);
+	--space-2xl-3xl: clamp(4.5rem, 3.4565rem + 5.2174vw, 7.5rem);
+
+	/* Custom pairs */
+	--space-s-2xl: clamp(1.125rem, -0.2228rem + 6.7391vw, 5rem);
+	--space-s-3xl: clamp(1.125rem, -1.0924rem + 11.087vw, 7.5rem);
+}
+
+/*Globals */
+
+* {
+	/* font-family: 'Abril Fatface', cursive; */
+
+	/* font-family: 'Arvo', serif; */
+	/* font-family: 'Dancing Script', cursive; */
+	/* font-family: 'Dosis', sans-serif; */
+
+	/* font-family: 'Exo', sans-serif; */
+
+	/* font-family: 'Lato', sans-serif; */
+
+	/* font-family: 'Libre Baskerville', serif; */
+
+	/* font-family: 'Merriweather', serif; */
+
+	/* font-family: 'Playfair Display', serif; */
+
+	/* font-family: 'Poppins', sans-serif; */
+	/* font-family: 'EB Garamond', serif; */
+
+	/* font-family: 'Quicksand', sans-serif; */
+
+	/* font-family: 'Mina', sans-serif; */
+
+	/* font-family: 'Roboto', sans-serif; */
+
+	/*  */
+	/* font-family: 'Monoton', sans-serif; */
+	/* font-family: 'EB Garamond', serif; */
+	/* Gelasio font is equivalent to Georgia
+	 which does not appear free.
+	 Georgia is Andy Bell's favourite font */
+
+	font-family: 'Gelasio', serif;
+}
+
+body {
+	background: var(--primary-color-light);
+	font-family: Roboto, sans-serif;
+	color: var(--secondary-color-dark);
+	font-size: var(--step-0);
+	/* 
+ 	color: #ebe7ef;
+  	background: radial-gradient(#280a48, #20043d);
+ 	*/
+}
+
+p {
+	max-width: var(--text-max-width);
+	color: var(--secondary-color-dark);
+}
+
+a {
+	color: currentColor;
+	text-decoration: var(--primary-color-dark);
+	li {
+		list-style: none;
+	}
+}
+
+h1 {
+	font-size: var(--step-5);
+
+	/* font-family: inherit; */
+	line-height: 1.1;
+	color: var(--secondary-color-dark);
+	background: linear-gradient(40deg, #ea00ff, #ea00ff, #03d5ff, #03d5ff);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+}
+
+h1:first-of-type {
+	margin-top: var(--space-m);
+}
+h2 {
+	font-size: var(--step-3);
+	line-height: 1.05;
+	max-width: 20ch;
+}
+/* Composition */
+
+/* BOX */
+
+.box {
+	padding: var(--space-2xs);
+	border: var(--border-thin) solid;
+	border-radius: var(--border-thick);
+	color: var(--secondary-color-dark);
+	background-color: var(--primary-color-light);
+	/* max-width: 90%; */
+}
+
+.box * {
+	color: inherit;
+}
+
+.box.invert {
+	color: var(--primary-color-light);
+	background-color: var(--secondary-color-dark);
+}
+
+/* CENTER */
+
+.center {
+	display: flex;
+	flex-direction: column;
+	/* This will affect alignment of headers */
+	align-items: center;
+	/* ... */
+	box-sizing: content-box;
+	max-inline-size: var(--text-max-width);
+	margin-inline: auto;
+	padding-inline-start: 1em;
+	padding-inline-end: 1em;
+	/* This will affect text in paragraphs not headers */
+	/* text-align: center; */
+	/* ... */
+}
+
+/* CLUSTER */
+
+.cluster {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 2rem;
+	justify-content: space-evenly;
+	align-items: center;
+}
+
+/* COVER */
+
+.cover {
+	display: flex;
+	flex-direction: column;
+	min-block-size: 100vh;
+	padding: 1rem;
+}
+
+.cover > * {
+	margin-block: 1rem;
+}
+
+.cover > :first-child:not(form) {
+	margin-block-start: 0;
+}
+
+.cover > :last-child:not(form) {
+	margin-block-end: 0;
+}
+
+.cover > form {
+	margin-block: auto;
+}
+
+/* GRID */
+
+.grid {
+	display: grid;
+	grid-gap: 1rem;
+}
+
+@supports (width: min(250px, 100%)) {
+	.grid {
+		grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+	}
+}
+
+/* FRAME */
+
+.frame {
+	--n: 16;
+	--d: 9;
+	aspect-ratio: var(--n) / var(--d);
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.frame > img,
+.frame > video {
+	inline-size: 100%;
+	block-size: 100%;
+	object-fit: cover;
+}
+
+/* BUTTONS */
+
+.button {
+	border-radius: var(--br);
+	padding: 0.5em;
+	margin: 0.5em;
+	background-color: var(--secondary-color-light);
+	/* background-color: red; */
+	color: var(--secondary-color-dark);
+	display: inline-block;
+	cursor: pointer;
+	border: var(--border-thin) dotted var(--primary-color-light);
+}
+.button:hover {
+	scale: 1.15;
+	color: var(--secondary-color-dark);
+	background-color: var(--primary-color-light);
+	border: dashed;
+}
+
+.button:active {
+	scale: 1.15;
+}
+
+/* Utilities */
+
+.flow > * + * {
+	margin-top: var(--space-m, 1em);
+}
+
+.wrapper {
+	margin-inline: auto;
+	padding-inline: var(--space-m, 5em);
+	max-width: 75rem;
+	position: relative;
+}
+
+/* Exceptions */
+
+[role='content-info'] {
+	margin-block-start: var(--space-s-2xl);
+	font-size: var(--step--1);
+	color: var(--secondary-color-glare);
+}
+[role='list'] {
+	padding: 0;
+}
+
+textarea,
+input,
+select {
+	max-width: 90%;
+	margin-inline: auto;
+	background-color: black;
+}
+
+img {
+	max-inline-size: 100%;
+	height: auto;
+	display: block;
+	border-radius: var(--br);
+}
+
+.card {
+	background-color: var(--secondary-color-glare);
+	color: var(--primary-color-light);
+}
+.card-header {
+	padding: var(--space-s-m);
+	/* height: var(--space-2xl-3xl); */
+}
+.card-title {
+	font-size: var(--step-2);
+}
+
+.card-img {
+	max-width: max-content;
+}
+.card-text {
+	padding: var(--space-3xs-2xs);
+}
+
+.hidden {
+	display: none;
+	visibility: hidden;
+}
+
+.hero {
+	--flow-space: var(--space-xs);
+	/* width: 100vw; */
+	height: 45vh;
+	/* background-image: url('/images/chain.webp'); */
+	background-color: #fff;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
