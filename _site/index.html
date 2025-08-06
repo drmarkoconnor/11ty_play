@@ -27,11 +27,118 @@
 
 
 			
-<h1>Home Page</h1>
+<h2>Coach House Bookings</h2>
 <p class="box center invert">
-	this text is in index.njk and has a class of box invert whereas the box
-	surrounding everything is in base.njk
+	This page connects to the Supabase backend and does simple display and
+	calculations on the data.
 </p>
+
+<section id="booking-debug">
+	<h2>Raw Booking Data</h2>
+	<pre id="raw-data">Loading…</pre>
+</section>
+
+<section id="booking-list">
+	<h2>All Bookings</h2>
+	<table border="1" cellpadding="4">
+		<thead>
+			<tr>
+				<th>Guest</th>
+				<th>Start Date</th>
+				<th>End Date</th>
+				<th>Status</th>
+			</tr>
+		</thead>
+		<tbody id="booking-rows">
+			<tr>
+				<td colspan="4">Loading…</td>
+			</tr>
+		</tbody>
+	</table>
+</section>
+
+<section id="booking-stats">
+	<h2>Stats</h2>
+	<ul>
+		<li>Total bookings: <span id="stat-total">…</span></li>
+		<li>Confirmed bookings: <span id="stat-confirmed">…</span></li>
+		<li>Pending bookings: <span id="stat-pending">…</span></li>
+	</ul>
+</section>
+
+<section id="booked-dates">
+	<h2>Booked Dates</h2>
+	<p id="dates-list">Loading…</p>
+</section>
+
+<script>
+	async function renderAll() {
+		// 1) Fetch data
+		const res = await fetch('/.netlify/functions/get-bookings')
+		const data = await res.json()
+
+		// 2) Debug raw JSON
+		document.getElementById('raw-data').textContent = JSON.stringify(
+			data,
+			null,
+			2
+		)
+
+		// 3) Render table
+		const tbody = document.getElementById('booking-rows')
+		if (!data.length) {
+			tbody.innerHTML = '<tr><td colspan="4">No bookings yet</td></tr>'
+		} else {
+			tbody.innerHTML = data
+				.map(
+					(b) => `
+        <tr>
+          <td>${b.guest_name}</td>
+          <td>${b.start_date}</td>
+          <td>${b.end_date}</td>
+          <td>${b.status}</td>
+        </tr>
+      `
+				)
+				.join('')
+		}
+
+		// 4) Render stats
+		const total = data.length
+		const confirmed = data.filter((b) => b.status === 'confirmed').length
+		const pending = data.filter((b) => b.status === 'pending').length
+		document.getElementById('stat-total').textContent = total
+		document.getElementById('stat-confirmed').textContent = confirmed
+		document.getElementById('stat-pending').textContent = pending
+
+		// 5) Render booked dates
+		function expandDateRange(start, end) {
+			const dates = []
+			let curr = new Date(start)
+			const last = new Date(end)
+			while (curr <= last) {
+				dates.push(curr.toISOString().slice(0, 10))
+				curr.setDate(curr.getDate() + 1)
+			}
+			return dates
+		}
+		const allDates = new Set()
+		data.forEach((b) => {
+			expandDateRange(b.start_date, b.end_date).forEach((d) => allDates.add(d))
+		})
+		const sorted = Array.from(allDates).sort()
+		document.getElementById('dates-list').textContent = sorted.length
+			? sorted.join(', ')
+			: 'No dates booked'
+	}
+
+	// Run when DOM is ready
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', renderAll)
+	} else {
+		renderAll()
+	}
+</script>
 
 
 			<footer class="center">@ Coach House Holidays</footer>
