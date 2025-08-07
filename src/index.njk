@@ -20,6 +20,7 @@ title: Home
 		<thead>
 			<tr>
 				<th>Guest</th>
+				<th>Email</th>
 				<th>Start Date</th>
 				<th>End Date</th>
 				<th>Status</th>
@@ -27,7 +28,7 @@ title: Home
 		</thead>
 		<tbody id="booking-rows">
 			<tr>
-				<td colspan="4">Loading…</td>
+				<td colspan="5">Loading…</td>
 			</tr>
 		</tbody>
 	</table>
@@ -63,13 +64,14 @@ title: Home
 		// 3) Render table
 		const tbody = document.getElementById('booking-rows')
 		if (!data.length) {
-			tbody.innerHTML = '<tr><td colspan="4">No bookings yet</td></tr>'
+			tbody.innerHTML = '<tr><td colspan="5">No bookings yet</td></tr>'
 		} else {
 			tbody.innerHTML = data
 				.map(
 					(b) => `
         <tr>
           <td>${b.guest_name}</td>
+          <td>${b.email}</td>
           <td>${b.start_date}</td>
           <td>${b.end_date}</td>
           <td>${b.status}</td>
