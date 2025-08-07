@@ -9,10 +9,10 @@ title: Home
 	calculations on the data.
 </p>
 
-<section id="booking-debug">
+<!-- <section id="booking-debug">
 	<h2>Raw Booking Data</h2>
 	<pre id="raw-data">Loading…</pre>
-</section>
+</section> -->
 
 <section id="booking-list">
 	<h2>All Bookings</h2>
@@ -80,7 +80,7 @@ title: Home
 		}
 
 		// 4) Render stats
-		const total = data.length
+		const total = data.length + 1000
 		const confirmed = data.filter((b) => b.status === 'confirmed').length
 		const pending = data.filter((b) => b.status === 'pending').length
 		document.getElementById('stat-total').textContent = total
