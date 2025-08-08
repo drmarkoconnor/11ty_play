@@ -8,7 +8,7 @@ const supabase = createClient(
 export async function handler() {
 	const { data, error } = await supabase
 		.from('bookings')
-		.select('id, guest_name, start_date, end_date, status')
+		.select('id, guest_name,email, start_date, end_date, status')
 
 	if (error) {
 		return {

@@ -1,0 +1,142 @@
+---
+layout: base
+title: Edit Booking
+---
+<h1>Edit Booking</h1>
+
+<form id="edit-form" class="mb-3" novalidate>
+  <input type="hidden" name="id" />
+
+  <div class="mb-3">
+    <label class="form-label">Guest Name</label>
+    <input class="form-control" name="guest_name" required />
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Email</label>
+    <input type="email" class="form-control" name="email" required />
+  </div>
+
+  <div class="row">
+    <div class="col mb-3">
+      <label class="form-label">Start</label>
+      <input type="date" class="form-control" name="start_date" required />
+    </div>
+    <div class="col mb-3">
+      <label class="form-label">End</label>
+      <input type="date" class="form-control" name="end_date" required />
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Status</label>
+    <select class="form-select" name="status">
+      <option value="pending">Pending</option>
+      <option value="confirmed">Confirmed</option>
+      <option value="cancelled">Cancelled</option>
+    </select>
+  </div>
+
+  <!-- Save is a submit button (OK) -->
+  <button type="submit" class="btn btn-success me-2" id="save-btn">Save</button>
+  <!-- Delete MUST be type="button" so it never submits the form -->
+  <button type="button" class="btn btn-danger" id="delete-btn">Delete</button>
+</form>
+
+<div id="edit-result"></div>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  let id = (params.get('id') || '').replace(/[^0-9]/g, '');
+  const form = document.getElementById('edit-form');
+  const out  = document.getElementById('edit-result');
+  const deleteBtn = document.getElementById('delete-btn');
+  const saveBtn = document.getElementById('save-btn');
+
+  // Load existing record
+  (async () => {
+    if (!id) {
+      out.innerHTML = '<div class="alert alert-warning">No id provided.</div>';
+      saveBtn.disabled = true;
+      deleteBtn.disabled = true;
+      return;
+    }
+    console.log('[Edit] GET', id);
+    const res = await fetch('/.netlify/functions/get-booking?id=' + encodeURIComponent(id));
+    const b = await res.json();
+    if (!res.ok || b.error) {
+      out.innerHTML = `<div class="alert alert-danger">Error: ${b.error || res.statusText}</div>`;
+      saveBtn.disabled = true;
+      deleteBtn.disabled = true;
+      return;
+    }
+    // Fill the form
+    form.elements.id.value           = b.id;
+    form.elements.guest_name.value   = b.guest_name || '';
+    form.elements.email.value        = b.email || '';
+    form.elements.start_date.value   = b.start_date || '';
+    form.elements.end_date.value     = b.end_date || '';
+    form.elements.status.value       = (b.status || 'pending').toLowerCase();
+
+    // Optional: disallow deleting confirmed
+    deleteBtn.disabled = (form.elements.status.value === 'confirmed');
+    if (deleteBtn.disabled) deleteBtn.title = 'Confirmed bookings cannot be deleted';
+  })();
+
+  // SAVE (Update)
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();          // never allow default navigation
+    const payload = Object.fromEntries(new FormData(form).entries());
+    payload.id = (payload.id || '').replace(/[^0-9]/g, ''); // sanitize
+
+    console.log('[Edit] PUT update-booking', payload);
+
+    saveBtn.disabled = true;
+    deleteBtn.disabled = true;
+    out.innerHTML = '';
+
+    const res  = await fetch('/.netlify/functions/update-booking', {
+      method: 'PUT',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const json = await res.json();
+
+    saveBtn.disabled = false;
+    deleteBtn.disabled = (form.elements.status.value === 'confirmed');
+
+    if (!res.ok || json.error) {
+      console.error('[Edit] Update failed', json);
+      out.innerHTML = `<div class="alert alert-danger">Error: ${json.error || res.statusText}</div>`;
+      return;
+    }
+    out.innerHTML = `<div class="alert alert-success">Saved booking #${json.booking.id}</div>`;
+  });
+
+  // DELETE (never submit form)
+  deleteBtn.addEventListener('click', async () => {
+    if (!id) return alert('No id loaded.');
+    if (!confirm('Really delete this booking?')) return;
+
+    console.log('[Edit] DELETE delete-booking', { id });
+
+    deleteBtn.disabled = true;
+    saveBtn.disabled   = true;
+
+    const res  = await fetch('/.netlify/functions/delete-booking?id=' + encodeURIComponent(id), {
+      method: 'DELETE'
+    });
+    const json = await res.json();
+
+    saveBtn.disabled   = false;
+
+    if (!res.ok || json.error) {
+      console.error('[Edit] Delete failed', json);
+      deleteBtn.disabled = false;
+      alert('Delete failed: ' + (json.error || res.statusText));
+      return;
+    }
+    // Navigate back to list after success
+    location.href = '/bookings/';
+  });
+</script>

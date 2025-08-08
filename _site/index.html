@@ -5,6 +5,12 @@
 		<title>Home</title>
 		<link rel="stylesheet" href="/assets/css/reset.css" />
 		<link rel="stylesheet" href="/assets/css/style.css" />
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+			crossorigin="anonymous"
+		/>
 	</head>
 	<body>
 		<div class="box">
@@ -13,14 +19,14 @@
 		<a href="/">
 			<li>Home</li>
 		</a>
-		<a href="/">
-			<li>Notes</li>
+		<a href="/bookings/create/">
+			<li>Create New Record</li>
 		</a>
 		<a href="/">
-			<li>Guests</li>
+			<li>Edit/Delete Record</li>
 		</a>
-		<a href="/">
-			<li>Finances</li>
+		<a href="/bookings/">
+			<li>List Records</li>
 		</a>
 	</ul>
 </div>
@@ -33,10 +39,10 @@
 	calculations on the data.
 </p>
 
-<section id="booking-debug">
+<!-- <section id="booking-debug">
 	<h2>Raw Booking Data</h2>
 	<pre id="raw-data">Loading…</pre>
-</section>
+</section> -->
 
 <section id="booking-list">
 	<h2>All Bookings</h2>
@@ -44,6 +50,7 @@
 		<thead>
 			<tr>
 				<th>Guest</th>
+				<th>Email</th>
 				<th>Start Date</th>
 				<th>End Date</th>
 				<th>Status</th>
@@ -51,7 +58,7 @@
 		</thead>
 		<tbody id="booking-rows">
 			<tr>
-				<td colspan="4">Loading…</td>
+				<td colspan="5">Loading…</td>
 			</tr>
 		</tbody>
 	</table>
@@ -68,7 +75,7 @@
 
 <section id="booked-dates">
 	<h2>Booked Dates</h2>
-	<p id="dates-list">Loading…</p>
+	<li id="dates-list">Loading…</li>
 </section>
 
 <script>
@@ -78,22 +85,23 @@
 		const data = await res.json()
 
 		// 2) Debug raw JSON
-		document.getElementById('raw-data').textContent = JSON.stringify(
-			data,
-			null,
-			2
-		)
+		// document.getElementById('raw-data').textContent = JSON.stringify(
+		// 	data,
+		// 	null,
+		// 	2
+		// )
 
 		// 3) Render table
 		const tbody = document.getElementById('booking-rows')
 		if (!data.length) {
-			tbody.innerHTML = '<tr><td colspan="4">No bookings yet</td></tr>'
+			tbody.innerHTML = '<tr><td colspan="5">No bookings yet</td></tr>'
 		} else {
 			tbody.innerHTML = data
 				.map(
 					(b) => `
         <tr>
           <td>${b.guest_name}</td>
+          <td>${b.email}</td>
           <td>${b.start_date}</td>
           <td>${b.end_date}</td>
           <td>${b.status}</td>
@@ -104,7 +112,7 @@
 		}
 
 		// 4) Render stats
-		const total = data.length
+		const total = data.length + 1000
 		const confirmed = data.filter((b) => b.status === 'confirmed').length
 		const pending = data.filter((b) => b.status === 'pending').length
 		document.getElementById('stat-total').textContent = total
@@ -145,6 +153,11 @@
 
 
 		</div>
+		<script
+			src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+			crossorigin="anonymous"
+		></script>
 	</body>
 </html>
 

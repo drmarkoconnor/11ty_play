@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>List Bookings</title>
+		<link rel="stylesheet" href="/assets/css/reset.css" />
+		<link rel="stylesheet" href="/assets/css/style.css" />
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+			crossorigin="anonymous"
+		/>
+	</head>
+	<body>
+		<div class="box">
+			<div>
+	<ul class="cluster">
+		<a href="/">
+			<li>Home</li>
+		</a>
+		<a href="/bookings/create/">
+			<li>Create New Record</li>
+		</a>
+		<a href="/">
+			<li>Edit/Delete Record</li>
+		</a>
+		<a href="/bookings/">
+			<li>List Records</li>
+		</a>
+	</ul>
+</div>
+
+
+			
+<h1>All Bookings</h1>
+
+<table class="table table-striped align-middle">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Guest</th>
+      <th>Email</th>
+      <th>Start</th>
+      <th>End</th>
+      <th>Status</th>
+      <th style="width:160px">Actions</th>
+    </tr>
+  </thead>
+  <tbody id="booking-rows">
+    <tr><td colspan="7">Loading…</td></tr>
+  </tbody>
+</table>
+
+<script>
+  let allBookings = [];
+
+  function rowHtml(b) {
+    const status = (b.status || '').toLowerCase();
+    const canDelete = status !== 'confirmed';
+    const delBtn = canDelete
+      ? `<button class="btn btn-sm btn-outline-danger js-del" data-id="${b.id}">Delete</button>`
+      : `<button class="btn btn-sm btn-outline-secondary" disabled title="Confirmed bookings cannot be deleted">Delete</button>`;
+
+    return `
+      <tr data-id="${b.id}">
+        <td>${b.id}</td>
+        <td>${b.guest_name ?? ''}</td>
+        <td>${b.email ?? ''}</td>
+        <td>${b.start_date ?? ''}</td>
+        <td>${b.end_date ?? ''}</td>
+        <td class="text-capitalize">${status}</td>
+        <td class="d-flex gap-2">
+          <a href="/bookings/edit/?id=${b.id}" class="btn btn-sm btn-outline-primary">Edit</a>
+          ${delBtn}
+        </td>
+      </tr>
+    `;
+  }
+
+  function renderRows(rows) {
+    const tbody = document.getElementById('booking-rows');
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="7">No bookings</td></tr>';
+      return;
+    }
+    tbody.innerHTML = rows.map(rowHtml).join('');
+  }
+
+  async function fetchFresh() {
+    // cache-bust + instruct the browser not to cache
+    const url = '/.netlify/functions/get-bookings?ts=' + Date.now();
+    const res = await fetch(url, { cache: 'no-store' });
+    const data = await res.json();
+    // Sort deterministically so you can see where each id lands
+    data.sort((a,b) => Number(a.id) - Number(b.id));
+    // Debug: log the IDs we actually got
+    console.log('[List] Received IDs:', data.map(x => x.id));
+    return data;
+  }
+
+  async function initList() {
+    try {
+      allBookings = await fetchFresh();
+      renderRows(allBookings);
+    } catch (e) {
+      console.error('[List] Fetch error:', e);
+      const tbody = document.getElementById('booking-rows');
+      tbody.innerHTML = '<tr><td colspan="7">Error loading bookings</td></tr>';
+    }
+  }
+
+  // Delete (instant row removal; we already wired this earlier)
+  document.getElementById('booking-rows').addEventListener('click', async (e) => {
+    const btn = e.target.closest('.js-del');
+    if (!btn) return;
+
+    const id = btn.dataset.id;
+    const tr = btn.closest('tr');
+    if (!id || !tr) return;
+
+    if (!confirm(`Delete booking #${id}?`)) return;
+
+    btn.disabled = true;
+    tr.style.opacity = 0.5;
+
+    try {
+      const res  = await fetch('/.netlify/functions/delete-booking?id=' + encodeURIComponent(id), {
+        method: 'DELETE',
+        headers: { 'X-Action': 'delete' } // if you added the server guard
+      });
+      const json = await res.json();
+
+      if (!res.ok || json.error) throw new Error(json.error || res.statusText);
+
+      // Remove from DOM + in-memory list
+      tr.remove();
+      allBookings = allBookings.filter(b => String(b.id) !== String(id));
+    } catch (err) {
+      console.error(err);
+      alert('Error deleting booking.');
+      btn.disabled = false;
+      tr.style.opacity = 1;
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', initList);
+</script>
+
+			<footer class="center">@ Coach House Holidays</footer>
+
+
+		</div>
+		<script
+			src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+			crossorigin="anonymous"
+		></script>
+	</body>
+</html>
+
